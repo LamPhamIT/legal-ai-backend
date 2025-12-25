@@ -20,8 +20,6 @@ export const createLawSchema = z.object({
 
   sourceUrl: z.string().url(),
   pdfUrl: z.string().url().optional(),
-
-  rawContent: z.string().min(20),
 });
 
 export type CreateLawInput = z.infer<typeof createLawSchema>;

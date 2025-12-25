@@ -17,7 +17,6 @@ export const createLaw = async (data: CreateLawInput) => {
 
       sourceUrl: data.sourceUrl,
       pdfUrl: data.pdfUrl,
-      rawContent: data.rawContent,
     },
   });
 };

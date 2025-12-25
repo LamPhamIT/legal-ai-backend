@@ -32,7 +32,6 @@
     
     sourceUrl        String
     pdfUrl           String? 
-    rawContent       String   @db.Text 
 
     createdAt        DateTime @default(now())
 
