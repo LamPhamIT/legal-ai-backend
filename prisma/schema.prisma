@@ -1,0 +1,111 @@
+// =========================
+// Prisma Client
+// =========================
+generator client {
+  provider = "prisma-client-js"
+}
+
+// =========================
+// Database
+// =========================
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =========================
+// WORKFLOW 1: AI REGULATORY SCOUT
+// =========================
+model Law {
+  id               Int      @id @default(autoincrement())
+  
+  title            String
+  lawType          String   // Nghị định, Thông tư, Luật...
+  issuingBody      String   // Chính phủ, Bộ Tài chính...
+  
+  summary          String   @db.Text // AI summary (Text dài)
+  affectedEntities String[] // Đối tượng chịu ảnh hưởng
+  keyChanges       String[] // Các thay đổi chính
+  
+  riskLevel        RiskLevel
+  effectiveDate    DateTime
+  
+  sourceUrl        String
+  pdfUrl           String?  // <--- LINK FILE GỐC TRÊN CLOUDINARY
+  rawContent       String   @db.Text // Nội dung thô để AI đọc
+
+  createdAt        DateTime @default(now())
+
+  // Relations
+  contracts        Contract[]
+}
+
+// =========================
+// WORKFLOW 2: AI CONTRACT ARCHITECT
+// =========================
+model Contract {
+  id               Int      @id @default(autoincrement())
+  
+  contractType     String   
+  partnerName      String   
+  contractValue    Float
+  
+  content          String   @db.Text
+  documentUrl      String?  
+  
+  riskScore        Int      @default(0) 
+  riskNote         String?  @db.Text
+  
+  signedAt         DateTime?
+  status           ContractStatus @default(DRAFT)
+  
+  createdAt        DateTime @default(now())
+
+  // Relations
+  lawId            Int
+  law              Law      @relation(fields: [lawId], references: [id])
+  complianceTasks  ComplianceTask[]
+}
+
+// =========================
+// WORKFLOW 3: AI COMPLIANCE GUARDIAN
+// =========================
+model ComplianceTask {
+  id               Int      @id @default(autoincrement())
+  
+  title            String  
+  description      String?  @db.Text
+  
+  deadline         DateTime
+  status           TaskStatus @default(PENDING)
+  
+  evidenceUrl      String? 
+
+  createdAt        DateTime @default(now())
+  completedAt      DateTime?
+
+  // Relations
+  contractId       Int
+  contract         Contract @relation(fields: [contractId], references: [id])
+}
+
+// =========================
+// ENUMS
+// =========================
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum ContractStatus {
+  DRAFT
+  SIGNED
+  CANCELLED
+}
+
+enum TaskStatus {
+  PENDING
+  COMPLETED
+  OVERDUE
+}

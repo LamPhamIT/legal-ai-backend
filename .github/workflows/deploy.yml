@@ -1,0 +1,52 @@
+name: Deploy Legal AI Backend
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH Key
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: Generate .env for deploy
+        env:
+          SECRETS_CONTEXT: ${{ toJSON(secrets) }}
+        run: |          
+          echo "$SECRETS_CONTEXT" | jq -r 'to_entries | .[] | select(.key | startswith("PROD_")) | "\(.key | sub("^PROD_"; ""))=\(.value)"' >> .env
+
+      - name: Copy .env to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no .env ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/legal-ai-backend/.env
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            export NVM_DIR=\"\$HOME/.nvm\"
+            [ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"
+            
+            # Bây giờ mới chạy các lệnh tiếp theo
+            cd /var/www/legal-ai-backend
+            
+            git fetch origin
+            git reset --hard origin/main
+            
+            npm install
+            npx prisma generate
+            npx prisma migrate dev
+            
+            npm run build
+            
+            # Restart app
+            pm2 reload ecosystem.config.mjs || pm2 reload legal-ai || pm2 start dist/src/index.js --name legal-ai
+            pm2 save
+          "
