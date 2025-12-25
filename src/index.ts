@@ -10,7 +10,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/api/laws", lawRoutes);
+app.use('/api/laws', lawRoutes);
 
 const PORT = process.env.PORT || 3000;
 

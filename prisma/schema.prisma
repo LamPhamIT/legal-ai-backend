@@ -19,20 +19,20 @@
   model Law {
     id               Int      @id @default(autoincrement())
     
-    title            String
-    lawType          String   // Nghị định, Thông tư, Luật...
-    issuingBody      String   // Chính phủ, Bộ Tài chính...
+    title            String   @db.Text
+    lawType          String   
+    issuingBody      String   
     
-    summary          String   @db.Text // AI summary (Text dài)
-    affectedEntities String[] // Đối tượng chịu ảnh hưởng
-    keyChanges       String[] // Các thay đổi chính
+    summary          String   @db.Text 
+    affectedEntities String[] 
+    keyChanges       String[] 
     
     riskLevel        RiskLevel
     effectiveDate    DateTime
     
     sourceUrl        String
-    pdfUrl           String?  // <--- LINK FILE GỐC TRÊN CLOUDINARY
-    rawContent       String   @db.Text // Nội dung thô để AI đọc
+    pdfUrl           String? 
+    rawContent       String   @db.Text 
 
     createdAt        DateTime @default(now())
 
