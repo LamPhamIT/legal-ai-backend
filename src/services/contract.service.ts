@@ -41,3 +41,9 @@ export const updateContractStatus = async (
 
   return updatedContract;
 };
+
+export const getAllContracts = async () => {
+  const contracts = await contractRepo.findAll();
+
+  return contracts;
+};

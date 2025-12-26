@@ -42,3 +42,15 @@ export const findContractsPendingTasks = async () => {
     },
   });
 };
+
+export const findAll = async () => {
+  return await prisma.contract.findMany({
+    include: {
+      complianceTasks: true,
+      law: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+};

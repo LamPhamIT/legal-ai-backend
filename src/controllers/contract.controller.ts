@@ -59,3 +59,21 @@ export const updateStatus = async (req: Request, res: Response) => {
     return res.status(500).json({ success: false, message });
   }
 };
+
+export const getContracts = async (req: Request, res: Response) => {
+  try {
+    const data = await contractService.getAllContracts();
+
+    return res.status(200).json({
+      success: true,
+      data: data,
+    });
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : 'Internal server error';
+    return res.status(500).json({
+      success: false,
+      message,
+    });
+  }
+};

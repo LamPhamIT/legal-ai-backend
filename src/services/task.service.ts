@@ -17,6 +17,32 @@ export const createComplianceTask = async (
   return await taskRepo.createTask(formattedData);
 };
 
-export const getDashboardTasks = async () => {
-  return await taskRepo.findAllTasks();
+export const getDashboardTasks = async (includeCompleted?: string) => {
+  const shouldShowAll = includeCompleted === 'true';
+  return await taskRepo.findAllTasks(shouldShowAll);
+};
+
+export const getTasksByContract = async (
+  contractId: string,
+  includeCompleted?: string,
+) => {
+  const shouldShowAll = includeCompleted === 'true';
+  return await taskRepo.findTasksByContractId(
+    Number(contractId),
+    shouldShowAll,
+  );
+};
+
+export const updateTaskStatus = async (id: string, status: string) => {
+  const taskId = Number(id);
+  if (isNaN(taskId)) {
+    throw new Error('ID nhiệm vụ không hợp lệ');
+  }
+
+  const validStatuses = ['PENDING', 'COMPLETED', 'OVERDUE'];
+  if (!validStatuses.includes(status)) {
+    throw new Error('Trạng thái không hợp lệ');
+  }
+
+  return await taskRepo.updateTaskStatus(taskId, status);
 };
