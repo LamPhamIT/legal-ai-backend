@@ -11,9 +11,7 @@ export default tsEslint.config(
   {
     ignores: ['dist', 'node_modules', 'prisma'],
   },
-  
   ...tsEslint.configs.recommended,
-  
   {
     languageOptions: {
       parserOptions: {

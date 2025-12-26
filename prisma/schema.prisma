@@ -39,32 +39,34 @@
     contracts        Contract[]
   }
 
-  // =========================
-  // WORKFLOW 2: AI CONTRACT ARCHITECT
-  // =========================
-  model Contract {
-    id               Int      @id @default(autoincrement())
-    
-    contractType     String   
-    partnerName      String   
-    contractValue    Float
-    
-    content          String   @db.Text
-    documentUrl      String?  
-    
-    riskScore        Int      @default(0) 
-    riskNote         String?  @db.Text
-    
-    signedAt         DateTime?
-    status           ContractStatus @default(DRAFT)
-    
-    createdAt        DateTime @default(now())
+ model Contract {
+  id               Int            @id @default(autoincrement())
+  
+  title            String        
+  contractType     String       
+  
+  partnerName      String       
+  partnerTaxCode   String?        
+  
+  contractValue    Float
+  currency         String         @default("VND")
+  
+  content          String         @db.Text 
+  documentUrl      String?       
+  
+  riskScore        Int            @default(0) 
+  riskNote         String?        @db.Text 
+  riskAssessment   Json?          
+  
+  status           ContractStatus @default(DRAFT)
+  signedAt         DateTime?
+  createdAt        DateTime       @default(now())
 
-    // Relations
-    lawId            Int
-    law              Law      @relation(fields: [lawId], references: [id])
-    complianceTasks  ComplianceTask[]
-  }
+  // Relations
+  lawId            Int?           
+  law              Law?           @relation(fields: [lawId], references: [id])
+  complianceTasks  ComplianceTask[]
+}
 
   // =========================
   // WORKFLOW 3: AI COMPLIANCE GUARDIAN
