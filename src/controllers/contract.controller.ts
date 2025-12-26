@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as contractService from '../services/contract.service';
 import { z } from 'zod';
 import { createContractSchema } from '../dtos/contract.schema';
+import { ContractStatus } from '@prisma/client';
 
 export const saveProcessedContract = async (req: Request, res: Response) => {
   try {
@@ -34,5 +35,27 @@ export const saveProcessedContract = async (req: Request, res: Response) => {
       success: false,
       message,
     });
+  }
+};
+
+export const updateStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const result = await contractService.updateContractStatus(
+      Number(id),
+      status as ContractStatus,
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: `Contract status updated to ${status}`,
+      data: result,
+    });
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : 'Internal server error';
+    return res.status(500).json({ success: false, message });
   }
 };

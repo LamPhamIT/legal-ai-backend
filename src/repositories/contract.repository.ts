@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma, ContractStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -16,6 +16,29 @@ export const findDuplicate = async (
     where: {
       title: title,
       partnerTaxCode: partnerTaxCode,
+    },
+  });
+};
+
+export const updateStatus = async (
+  id: number,
+  status: ContractStatus,
+  signedAt?: Date,
+) => {
+  return await prisma.contract.update({
+    where: { id },
+    data: {
+      status,
+      signedAt: status === 'SIGNED' ? signedAt || new Date() : undefined,
+    },
+  });
+};
+
+export const findContractsPendingTasks = async () => {
+  return await prisma.contract.findMany({
+    where: {
+      status: 'SIGNED',
+      complianceTasks: { none: {} },
     },
   });
 };
