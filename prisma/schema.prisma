@@ -103,6 +103,7 @@
     DRAFT
     SIGNED
     CANCELLED
+    COMPLETED
   }
 
   enum TaskStatus {
