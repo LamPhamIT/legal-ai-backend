@@ -15,7 +15,7 @@ n8n: xử lý AI, workflow, tự động hóa
 Backend: validate dữ liệu, lưu database, quản lý trạng thái
 Database: lưu luật, hợp đồng, nhiệm vụ tuân thủ
 Các Workflow chính
-🔹 Workflow 1: AI Regulatory Scout
+- Workflow 1: AI Regulatory Scout
 
 Mục tiêu: Tự động thu thập và phân tích các văn bản pháp luật mới.
 
@@ -38,7 +38,7 @@ n8n gọi API backend để lưu luật vào database
 Giá trị:
 Doanh nghiệp luôn được cập nhật luật mới nhất.
 
-🔹 Workflow 2: AI Contract Architect
+- Workflow 2: AI Contract Architect
 
 Mục tiêu: Soạn thảo hợp đồng và đánh giá rủi ro dựa trên luật mới nhất.
 
@@ -72,8 +72,7 @@ Nội dung hợp đồng
 
 Lưu ý:
 Backend không xử lý AI, toàn bộ AI nằm trong n8n.
-
-🔹 Workflow 3: AI Compliance Guardian
+- Workflow 3: AI Compliance Guardian
 
 Mục tiêu: Nhắc nhở nghĩa vụ pháp lý sau khi hợp đồng được ký.
 
